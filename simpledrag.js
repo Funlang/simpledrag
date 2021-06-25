@@ -69,11 +69,6 @@
     // simple drag
     function sdrag(onDrag, onStop, direction) {
 
-        var names = ['left', 'top', 'right', 'bottom'];
-        var nameX = {true: 'left', false: 'right'};
-        var nameY = {true: 'top', false: 'bottom'};
-        var x = true;
-        var y = true;
         var startX = 0;
         var startY = 0;
         var el = this;
@@ -89,8 +84,7 @@
                     startX = fix.startX;
                 }
                 if (false === ('skipX' in fix)) {
-                    el.style[nameX[x]] = (pageX - startX) * (x?1:-1) + 'px';
-                    el.style[nameX[!x]] = 'unset';
+                    el.style.left = (pageX - startX) + 'px';
                 }
             }
             if ('horizontal' !== direction) {
@@ -99,8 +93,7 @@
                     startY = fix.startY;
                 }
                 if (false === ('skipY' in fix)) {
-                    el.style[nameY[y]] = (pageY - startY) * (y?1:-1) + 'px';
-                    el.style[nameY[!y]] = 'unset';
+                    el.style.top = (pageY - startY) + 'px';
                 }
             }
         }
@@ -108,13 +101,10 @@
         function startDragging(e) {
             if (e.currentTarget instanceof HTMLElement || e.currentTarget instanceof SVGElement) {
                 dragging = true;
-                var style = getComputedStyle(el);
-                var vs = {}
-                names.forEach(n => vs[n] = style[n] ? parseInt(style[n]) : 0);
-                x = vs.left < vs.right;
-                y = vs.top < vs.bottom;
-                startX = e.pageX - vs[nameX[x]] * (x?1:-1);
-                startY = e.pageY - vs[nameY[y]] * (y?1:-1);
+                var left = el.style.left ? parseInt(el.style.left) : 0;
+                var top = el.style.top ? parseInt(el.style.top) : 0;
+                startX = e.pageX - left;
+                startY = e.pageY - top;
                 window.addEventListener('mousemove', move);
             }
             else {
@@ -122,7 +112,7 @@
             }
         }
 
-        this.addEventListener('mousedown', startDragging);
+        this.addEventListener('mousedown', startDragging, {capture: true});
         window.addEventListener('mouseup', function (e) {
             if (true === dragging) {
                 dragging = false;
