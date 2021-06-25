@@ -105,7 +105,7 @@
                 var top = el.style.top ? parseInt(el.style.top) : 0;
                 startX = e.pageX - left;
                 startY = e.pageY - top;
-                window.addEventListener('mousemove', move);
+                window.addEventListener('mousemove', move, {capture: true});
             }
             else {
                 throw new Error("Your target must be an html element");
